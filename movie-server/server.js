@@ -10,6 +10,7 @@ const app = express();
 app.use(cors({
     origin: '*'
 }));
+app.use(bodyParser.json())
 
 // Route registeration
 app.get('/search/keyword', routes.search_keyword)
