@@ -47,8 +47,8 @@ const getTypeSearch = async (type) => {
     return res.json()
 }
 
-const getSimilarTypeSearch = async (keyword) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/search/similar_type?type=${keyword}`, {
+const getSimilarTypeSearch = async (id) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/search/similar_movie?movie_id=${id}`, {
         method: 'GET',
     })
     return res.json()

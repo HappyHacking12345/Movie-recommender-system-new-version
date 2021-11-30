@@ -137,7 +137,7 @@ async function search_similar(req, res) {
                                                                                         WHERE movie_id = ${req.query.movie_id}))) M) N
                                         GROUP BY movie_id
                                         ORDER BY SUM(related) DESC) P
-                                ) LIMIT 50) A LEFT JOIN meta B
+                                ) AND movie_id <> ${req.query.movie_id} LIMIT 50) A LEFT JOIN meta B
             ON A.movie_id = B.id)
             SELECT movie_info.*, F.links AS poster_link
             FROM
@@ -159,14 +159,25 @@ async function search_similar(req, res) {
 
 async function search_id(req, res) {
     if (req.query.id && !isNaN(req.query.id)) {
-        connection.query(`SELECT A.*, B.links AS poster_link
+        connection.query(`WITH movie_info AS
+        (SELECT A.*, B.links AS poster_link
         FROM
         (SELECT id AS movie_id, title, release_date, vote_average, imdb_id, overview, runtime,
                status
         FROM meta
         WHERE id = ${req.query.id}) A
         LEFT JOIN imageLink B
-        ON A.imdb_id = B.IMDBid;`, function (error, results, fields) {
+        ON A.imdb_id = B.IMDBid)
+        SELECT D.*, movie_info.*
+        FROM
+        (SELECT movie_id, GROUP_CONCAT(production_companies_name) AS production_companies_name
+        FROM
+        (SELECT A.movie_id, B.production_companies_name FROM
+        (SELECT movie_id, production_companies_id
+        FROM movieProductionCompanies
+        WHERE movie_id = ${req.query.id}) A
+        LEFT JOIN productionCompanies B
+        ON A.production_companies_id = B.production_companies_id) C) D, movie_info;`, function (error, results, fields) {
             if (error) {
                 console.log(error)
                 res.json({error: error})
@@ -178,6 +189,95 @@ async function search_id(req, res) {
         res.json({error: 'movie type missing'})
     }
 }
+
+async function isFav(req, res) {
+    const id = req.query.id;
+    const userId = req.query.userid;
+    if (isNaN(id) || isNaN(userId)) {
+        res.sendStatus(400);
+        return;
+    }
+    // query userFav with id and userId;
+    const query = `SELECT 1 FROM userFav WHERE user_id=${userId} AND movie_id=${id}`
+    connection.query(query, (error, results, fields) => {
+        if (results.length > 0) {
+            res.json({result: 1})
+        } else {
+            res.json({result: 0})
+        }
+    })
+}
+
+async function myFav(req, res) {
+    const userId = req.query.userid;
+    if (isNaN(userId)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const query = `SELECT DISTINCT u.movie_id,
+        m.title,
+        m.release_date,
+        m.vote_average,
+        m.imdb_id,
+        m.overview,
+        m.runtime,
+        m.status,
+        il.links                     AS poster_link,
+        pc.production_companies_name AS production_companies
+    FROM   (SELECT *
+    FROM   userFav
+    WHERE  user_id = ${userId}) u
+    LEFT JOIN (SELECT *
+        FROM   meta
+        ORDER  BY vote_average DESC) m
+    ON m.id = u.movie_id
+    LEFT JOIN movieInfo mi
+    ON u.movie_id = mi.movie_id
+    LEFT JOIN imageLink il
+    ON m.imdb_id = il.imdbid
+    LEFT JOIN productionCompanies pc
+    ON mi.production_companies_id = pc.production_companies_id`;
+
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            console.log(error)
+            res.json({error : error})
+        } else if (results) {
+            res.json({results : results})
+        }
+    })
+}
+
+async function setFav(req, res) {
+    if (!req.body || !req.body.userId || !req.body.id || req.body.fav === undefined) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const userId = req.body.userId;
+    const id = req.body.id;
+    const fav = req.body.fav;
+    let query;
+    let result;
+    if (fav) {
+        query = `INSERT INTO userFav (user_id, movie_id) VALUES (${userId}, ${id})`;
+        result = 1;
+    } else {
+        query = `DELETE FROM userFav WHERE user_id=${userId} AND movie_ID=${id}`
+        result = 0;
+    }
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            res.status(500)
+            res.json({ error: error })
+        } else {
+            res.json({result: result})
+        }
+    })
+}
+
+
 
 let users = require('./user').items;
 let findUser = function (name, password) {
@@ -238,5 +338,8 @@ module.exports = {
     search_similar,
     search_id,
     login,
-    register
+    register,
+    isFav,
+    myFav,
+    setFav
 }

@@ -12,6 +12,7 @@ import Home from "./components/Home";
 import AppHeader from "./components/AppHeader";
 import PlayersPage from "./components/PlayersPage";
 import MovieSearchPage from "./components/MovieSearchPage";
+import MyFavorite from "./components/MyFavorite"
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -51,7 +52,6 @@ const App = () => {
                 </button>
               </Link>
             </li>
-
           )}
         </div>
 
@@ -103,7 +103,7 @@ const App = () => {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/movieSearchPage" component={MovieSearchPage}/>
-          <Route path="/myFavorite" component={MovieSearchPage}/>
+          <Route path="/myFavorite" component={MyFavorite}/>
         </Switch>
       </div>
     </div>

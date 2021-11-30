@@ -26,6 +26,12 @@ app.post('/api/auth/login', routes.login)
 app.post('/api/auth/register', routes.register)
 
 
+app.get('/user/isfav', routes.isFav)
+
+app.get('/user/myfav', routes.myFav)
+
+app.put('/user/setfav', routes.setFav)
+
 app.listen(config.server_port, () => {
     console.log(`Server running at http://${config.server_host}:${config.server_port}/`);
 });

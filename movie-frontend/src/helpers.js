@@ -41,6 +41,18 @@ const formatOrderStatus = (orderStatus)=>{
     
 }
 
+export const jsonFetch = (resource, init) => {
+    if (!init) {
+        init = {}
+    }
+    if (!init.headers) {
+        init.headers = {}
+    }
+    init.headers['Content-Type'] = 'application/json'
+
+    return fetch(resource, init)
+}
+
 const Helpers = {
     isoStrToDatetime,
     formatUSD,

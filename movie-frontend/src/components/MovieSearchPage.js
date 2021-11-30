@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {Form, FormInput, FormGroup, Button, Card, CardBody, CardTitle, Progress} from "shards-react";
+import AuthService from "../services/auth.service";
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import {
     Table,
     Pagination,
@@ -12,9 +13,10 @@ import {
     Slider,
     Rate
 } from 'antd'
-import {RadarChart} from 'react-vis';
 import {format} from 'd3-format';
-
+import fav from '../assets/images/fav.png'
+import nofav from '../assets/images/nofav.png'
+import UserService from '../services/user.service'
 import {getKeywordSearch, getSimilarTypeSearch, getTypeSearch, getIdSearch} from '../fetcher'
 const wideFormat = format('.3r');
 
@@ -30,7 +32,6 @@ const ButtonToggle = styled(Button)`
 const ButtonGroup = styled.div`
   display: flex;
 `;
-
 
 
 const movieColumns = [
@@ -75,16 +76,21 @@ class MovieSearchPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            addButtonText: 'Add to Favorite',
             keywordQuery: '',
             typeQuery: '',
             similarTypeQuery: '',
             selectedMovieId: window.location.search ? window.location.search.substring(1).split('=')[1] : 97593,
             selectedMovieDetails: null,
             movieResults: [],
-            similarMovieResults: []
-
+            similarMovieResults1: [],
+            similarMovieResults2: [],
+            similarMovieResults3: [],
+            similarMovieResults4: [],
+            similarMovieResults5: [],
+            similarMovieResults6: [],
+            isFav: false
         }
-
         this.updateKeywordSearchResults = this.updateKeywordSearchResults.bind(this)
         this.handleKeywordQueryChange = this.handleKeywordQueryChange.bind(this)
         this.handleTypeQueryChange = this.handleTypeQueryChange.bind(this)
@@ -169,8 +175,21 @@ class MovieSearchPage extends React.Component {
 
     handleSimilarTypeQueryChange() {
         getSimilarTypeSearch(this.state.keywordQuery).then(res => {
-            this.setState({similarMovieResults: res['results']})
+            this.setState({
+                similarMovieResults1: res.results[0],
+                similarMovieResults2: res.results[1],
+                similarMovieResults3: res.results[2],
+                similarMovieResults4: res.results[3],
+                similarMovieResults5: res.results[4],
+                similarMovieResults6: res.results[5]
+                })
         })
+    }
+
+    truncateString(string) {
+        if (string.length > 10) {
+            string = string.substring(0, 9) + "...";
+        }
     }
 
     componentDidMount() {
@@ -181,8 +200,29 @@ class MovieSearchPage extends React.Component {
         getIdSearch(this.state.selectedMovieId).then(res => {
             this.setState({selectedMovieDetails: res.results[0]})
         })
+
+        getSimilarTypeSearch(this.state.selectedMovieId).then(res => {
+            this.setState({
+                        similarMovieResults1: res.results[0],
+                        similarMovieResults2: res.results[1],
+                        similarMovieResults3: res.results[2],
+                        similarMovieResults4: res.results[3],
+                        similarMovieResults5: res.results[4],
+                        similarMovieResults6: res.results[5]
+                        })
+        })
+
+        this.setState({similarMovieTitle1: this.truncateString(this.state.similarMovieResults5)})
     }
 
+    toggleFav = () => {
+        const user = this.user
+        if (user) {
+            UserService.setFavorite(this.state.selectedMovieId, user.userId, !this.state.isFav).then(res => {
+                this.setState({isFav: res.result})
+            })
+        }
+    }
 
 
     render() {
@@ -285,7 +325,7 @@ class MovieSearchPage extends React.Component {
 
                                     <Row>
                                         <Col>
-                                            Production Companies: {this.state.selectedMovieDetails.production_companies}
+                                            Production Companies: {this.state.selectedMovieDetails.production_companies_name}
                                         </Col>
                                     </Row>
 
@@ -300,15 +340,75 @@ class MovieSearchPage extends React.Component {
                                 </Col>
 
                                 <Col flex={2} style={{ textAlign: 'right' }}>
-                                    <img src={this.state.selectedMovieDetails.poster_link} style={{height:'40vh'}}/>
+                                    <div>
+                                    <img src={this.state.selectedMovieDetails.poster_link} style={{height:'45vh', width: '35vh'}}/>
+                                    <img onClick={this.toggleFav} src={this.state.isFav ? fav : nofav } style={{position: 'absolute', top:0, right: '15px', width: '50px', cursor: 'pointer'}}></img>
+                                    </div>
                                 </Col>
                             </Row>
 
-                            <Row>
-                                <Col>
-                                    <h6>Overview</h6>
-                                    {this.state.selectedMovieDetails.overview}
+                            <Row gutter='30' align='middle' justify='center'>
+                                <Col flex={2} style={{ textAlign: 'left' }}>
+                                    <Row gutter='30' align='middle' justify='left'>
+                                        <Col flex={2} style={{textAlign: 'left'}}>
+                                        <h6>Overview</h6>
+                                        <text>{this.state.selectedMovieDetails.overview}</text>
+                                        </Col>
+                                    </Row>
+                                    <br>
+                                    </br>
+                                    <Row gutter='30' align='middle' justify='left'>
+                                        <Col flex={2} style={{textAlign: 'left'}}>
+                                        <h6>Similar Movies</h6>
+                                        </Col>
+                                    </Row>
                                 </Col>
+                            </Row>
+
+
+                            <Row>
+                                 <div class="col-md-2">
+                                 
+                                    <a href={`/movieSearchPage?id=${this.state.similarMovieResults1.movie_id}`}>
+                                    <img src={this.state.similarMovieResults1.poster_link} style={{height:'20vh', width: '15vh'}}/> 
+                                    <figcaption>{this.state.similarMovieResults1.title} </figcaption>
+                                    </a>
+                                </div> 
+
+                                <div class="col-md-2 col-md-offset-1">
+                                    <a href={`/movieSearchPage?id=${this.state.similarMovieResults2.movie_id}`}>
+                                    <img src={this.state.similarMovieResults2.poster_link} style={{height:'20vh', width: '15vh'}}/> 
+                                    <figcaption>{this.state.similarMovieResults2.title} </figcaption>
+                                    </a>
+                                </div>
+
+                                <div class="col-md-2 col-md-offset-1">
+                                    <a href={`/movieSearchPage?id=${this.state.similarMovieResults3.movie_id}`}>
+                                    <img src={this.state.similarMovieResults3.poster_link} style={{height:'20vh', width: '15vh'}}/> 
+                                    <figcaption>{this.state.similarMovieResults3.title} </figcaption>
+                                    </a>
+                                </div>
+
+                                <div class="col-md-2 col-md-offset-1">
+                                    <a href={`/movieSearchPage?id=${this.state.similarMovieResults4.movie_id}`}>
+                                    <img src={this.state.similarMovieResults4.poster_link} style={{height:'20vh', width: '15vh'}}/> 
+                                    <figcaption>{this.state.similarMovieResults4.title} </figcaption>
+                                    </a>
+                                </div>
+
+                                <div class="col-md-2 col-md-offset-1">
+                                    <a href={`/movieSearchPage?id=${this.state.similarMovieResults5.movie_id}`}>
+                                    <img src={this.state.similarMovieResults5.poster_link} style={{height:'20vh', width: '15vh'}}/> 
+                                    <figcaption>{this.state.similarMovieResults5.title} </figcaption>
+                                    </a>
+                                </div>
+
+                                <div class="col-md-2 col-md-offset-1">
+                                    <a href={`/movieSearchPage?id=${this.state.similarMovieResults6.movie_id}`}>
+                                    <img src={this.state.similarMovieResults6.poster_link} style={{height:'20vh', width: '15vh'}}/> 
+                                    <figcaption>{this.state.similarMovieResults6.title} </figcaption>
+                                    </a>
+                                </div>
                             </Row>
 
                         </CardBody>
