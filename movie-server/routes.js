@@ -297,7 +297,9 @@ async function login(req, res) {
                 res.json({error : error})
             } else if (results) {
                 // let sessionId = results[0].user_id
-                    let user = {
+                let userId = results[0].user_id;
+                let user = {
+                    'userId': userId,
                     'displayName': req.body.username,
                     'sessionId': '12345'
                 }
