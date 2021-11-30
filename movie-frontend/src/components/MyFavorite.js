@@ -174,12 +174,17 @@ export default class MyFavorite extends React.Component {
                                 Release Date: {this.state.selectedMovieDetails.release_date}
                                 </Col>
                                 </Row>
+                                
+                                <Row>
+                                        <b>Production Companies</b>: 
+                                </Row>
 
                                 <Row>
-                                <Col>
-                                Production Companies: {this.state.selectedMovieDetails.production_companies}
-                                </Col>
+                                    <Col  style={{overflow: 'wrap', width: 400}}>
+                                    {this.state.selectedMovieDetails.production_companies_name}
+                                    </Col>
                                 </Row>
+
 
                                 <br>
                                 </br>

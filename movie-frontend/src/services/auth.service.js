@@ -16,7 +16,8 @@ const login = (username, password) => {
           let user = {
               'displayName': response.data.displayName,
               'sessionId': response.data.sessionId,
-              'userId': response.data.userId
+              'userId': response.data.userId,
+              'gg': 0
           }
         localStorage.setItem("user", JSON.stringify(user));
       }

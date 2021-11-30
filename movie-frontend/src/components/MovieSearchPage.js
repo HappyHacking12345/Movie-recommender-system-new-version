@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {Form, FormInput, FormGroup, Button, Card, CardBody, CardTitle, Progress} from "shards-react";
 import AuthService from "../services/auth.service";
 import styled from 'styled-components';
-import { Link } from "react-router-dom";
 import {
     Table,
     Pagination,
@@ -32,6 +31,7 @@ const ButtonToggle = styled(Button)`
 const ButtonGroup = styled.div`
   display: flex;
 `;
+
 
 
 const movieColumns = [
@@ -105,6 +105,7 @@ class MovieSearchPage extends React.Component {
         this.getWesternMovies = this.getWesternMovies.bind(this)
         this.getDocumentaryMovies = this.getDocumentaryMovies.bind(this)
         this.getMusicMovies = this.getMusicMovies.bind(this)
+        this.user = AuthService.getCurrentUser();
 
     }
 
@@ -186,11 +187,6 @@ class MovieSearchPage extends React.Component {
         })
     }
 
-    truncateString(string) {
-        if (string.length > 10) {
-            string = string.substring(0, 9) + "...";
-        }
-    }
 
     componentDidMount() {
         getKeywordSearch(this.state.keywordQuery).then(res => {
@@ -211,8 +207,6 @@ class MovieSearchPage extends React.Component {
                         similarMovieResults6: res.results[5]
                         })
         })
-
-        this.setState({similarMovieTitle1: this.truncateString(this.state.similarMovieResults5)})
     }
 
     toggleFav = () => {
@@ -295,45 +289,49 @@ class MovieSearchPage extends React.Component {
                                     </Row>
                                     <Row gutter='30' align='middle' justify='left'>
                                         <Col>
-                                            <h6> Basic Info </h6>
+                                            <h5> Basic Info </h5>
                                         </Col>
                                     </Row>
 
                                     <Row gutter='30' align='middle' justify='left'>
                                         <Col>
-                                            Status: {this.state.selectedMovieDetails.status}
+                                            <b>Status</b>: {this.state.selectedMovieDetails.status}
                                         </Col>
                                     </Row>
 
                                     <Row gutter='30' align='middle' justify='left'>
                                         <Col>
-                                            Movie Length:   {this.state.selectedMovieDetails.runtime} min
+                                            <b>Movie Length</b>:   {this.state.selectedMovieDetails.runtime} min
                                         </Col>
                                     </Row>
 
                                     <Row gutter='30' align='middle' justify='left'>
                                         <Col>
-                                            Status: {this.state.selectedMovieDetails.status}
+                                            <b>Status</b>: {this.state.selectedMovieDetails.status}
                                         </Col>
                                     </Row>
 
                                     <Row>
                                         <Col>
-                                            Release Date: {this.state.selectedMovieDetails.release_date}
+                                            <b>Release Date</b>: {this.state.selectedMovieDetails.release_date}
                                         </Col>
                                     </Row>
 
                                     <Row>
-                                        <Col>
-                                            Production Companies: {this.state.selectedMovieDetails.production_companies_name}
-                                        </Col>
+                                        <b>Production Companies</b>: 
+                                    </Row>
+
+                                    <Row>
+                                    <Col  style={{overflow: 'wrap', width: 400}}>
+                                    {this.state.selectedMovieDetails.production_companies_name}
+                                    </Col>
                                     </Row>
 
                                     <br>
                                     </br>
                                     <Row>
                                         <Col flex={2} style={{textAlign: 'left'}}>
-                                            <h6>Rating</h6>
+                                            <h5>Rating</h5>
                                             <Rate disabled defaultValue={this.state.selectedMovieDetails.vote_average / 2}/>
                                         </Col>
                                     </Row>
@@ -346,12 +344,13 @@ class MovieSearchPage extends React.Component {
                                     </div>
                                 </Col>
                             </Row>
-
+                            <br>
+                            </br>
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col flex={2} style={{ textAlign: 'left' }}>
                                     <Row gutter='30' align='middle' justify='left'>
                                         <Col flex={2} style={{textAlign: 'left'}}>
-                                        <h6>Overview</h6>
+                                        <h5>Overview</h5>
                                         <text>{this.state.selectedMovieDetails.overview}</text>
                                         </Col>
                                     </Row>
@@ -359,7 +358,7 @@ class MovieSearchPage extends React.Component {
                                     </br>
                                     <Row gutter='30' align='middle' justify='left'>
                                         <Col flex={2} style={{textAlign: 'left'}}>
-                                        <h6>Similar Movies</h6>
+                                        <h5>Similar Movies</h5>
                                         </Col>
                                     </Row>
                                 </Col>
