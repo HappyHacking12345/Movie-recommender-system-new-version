@@ -83,13 +83,20 @@ class MovieSearchPage extends React.Component {
             selectedMovieId: window.location.search ? window.location.search.substring(1).split('=')[1] : 97593,
             selectedMovieDetails: null,
             movieResults: [],
-            similarMovieResults1: [],
-            similarMovieResults2: [],
-            similarMovieResults3: [],
-            similarMovieResults4: [],
-            similarMovieResults5: [],
-            similarMovieResults6: [],
-            isFav: false
+            similarMovieResults1: {'movie_id': null, 'poster_link': null, 'title': null},
+            similarMovieResults2: {'movie_id': null, 'poster_link': null, 'title': null},
+            similarMovieResults3: {'movie_id': null, 'poster_link': null, 'title': null},
+            similarMovieResults4: {'movie_id': null, 'poster_link': null, 'title': null},
+            similarMovieResults5: {'movie_id': null, 'poster_link': null, 'title': null},
+            similarMovieResults6: {'movie_id': null, 'poster_link': null, 'title': null},
+            showResult1: 'hidden',
+            showResult2: 'hidden',
+            showResult3: 'hidden',
+            showResult4: 'hidden',
+            showResult5: 'hidden',
+            showResult6: 'hidden',
+            nullMovie: {'movie_id': null, 'poster_link': null, 'title': null},
+            isFav: false,
         }
         this.updateKeywordSearchResults = this.updateKeywordSearchResults.bind(this)
         this.handleKeywordQueryChange = this.handleKeywordQueryChange.bind(this)
@@ -175,15 +182,31 @@ class MovieSearchPage extends React.Component {
 
 
     handleSimilarTypeQueryChange() {
-        getSimilarTypeSearch(this.state.keywordQuery).then(res => {
+        getSimilarTypeSearch(this.state.selectedMovieId).then(res => {
+
             this.setState({
-                similarMovieResults1: res.results[0],
-                similarMovieResults2: res.results[1],
-                similarMovieResults3: res.results[2],
-                similarMovieResults4: res.results[3],
-                similarMovieResults5: res.results[4],
-                similarMovieResults6: res.results[5]
-                })
+                similarMovieResults1: res.results[0] ? res.results[0] : this.state.nullMovie,
+                showResult1: res.results[0] ? 'visible' : 'hidden',
+
+                similarMovieResults2: res.results[1] ? res.results[1] : this.state.nullMovie,
+                showResult2: res.results[1] ? 'visible' : 'hidden',
+
+                similarMovieResults2: res.results[1] ? res.results[1] : this.state.nullMovie,
+                showResult2: res.results[1] ? 'visible' : 'hidden',
+
+                similarMovieResults3: res.results[2] ? res.results[2] : this.state.nullMovie,
+                showResult3: res.results[2] ? 'visible' : 'hidden',
+
+                similarMovieResults4: res.results[3] ? res.results[3] : this.state.nullMovie,
+                showResult4: res.results[3] ? 'visible' : 'hidden',
+
+                similarMovieResults5: res.results[4] ? res.results[4] : this.state.nullMovie,
+                showResult5: res.results[4] ? 'visible' : 'hidden',
+
+                similarMovieResults6: res.results[5] ? res.results[5] : this.state.nullMovie,
+                showResult6: res.results[5] ? 'visible' : 'hidden'
+            })
+
         })
     }
 
@@ -198,15 +221,33 @@ class MovieSearchPage extends React.Component {
         })
 
         getSimilarTypeSearch(this.state.selectedMovieId).then(res => {
+
             this.setState({
-                        similarMovieResults1: res.results[0],
-                        similarMovieResults2: res.results[1],
-                        similarMovieResults3: res.results[2],
-                        similarMovieResults4: res.results[3],
-                        similarMovieResults5: res.results[4],
-                        similarMovieResults6: res.results[5]
-                        })
+                similarMovieResults1: res.results[0] ? res.results[0] : this.state.nullMovie,
+                showResult1: res.results[0] ? 'visible' : 'hidden',
+
+                similarMovieResults2: res.results[1] ? res.results[1] : this.state.nullMovie,
+                showResult2: res.results[1] ? 'visible' : 'hidden',
+
+                similarMovieResults2: res.results[1] ? res.results[1] : this.state.nullMovie,
+                showResult2: res.results[1] ? 'visible' : 'hidden',
+
+                similarMovieResults3: res.results[2] ? res.results[2] : this.state.nullMovie,
+                showResult3: res.results[2] ? 'visible' : 'hidden',
+
+                similarMovieResults4: res.results[3] ? res.results[3] : this.state.nullMovie,
+                showResult4: res.results[3] ? 'visible' : 'hidden',
+
+                similarMovieResults5: res.results[4] ? res.results[4] : this.state.nullMovie,
+                showResult5: res.results[4] ? 'visible' : 'hidden',
+
+                similarMovieResults6: res.results[5] ? res.results[5] : this.state.nullMovie,
+                showResult6: res.results[5] ? 'visible' : 'hidden'
+            })
+
         })
+
+
     }
 
     toggleFav = () => {
@@ -366,43 +407,42 @@ class MovieSearchPage extends React.Component {
 
 
                             <Row>
-                                 <div class="col-md-2">
-                                 
+                                 <div class="col-md-2" style={{visibility:this.state.showResult1}}>                                   
                                     <a href={`/movieSearchPage?id=${this.state.similarMovieResults1.movie_id}`}>
                                     <img src={this.state.similarMovieResults1.poster_link} style={{height:'20vh', width: '15vh'}}/> 
                                     <figcaption>{this.state.similarMovieResults1.title} </figcaption>
                                     </a>
                                 </div> 
 
-                                <div class="col-md-2 col-md-offset-1">
+                                <div class="col-md-2 col-md-offset-1" style={{visibility:this.state.showResult2}}>
                                     <a href={`/movieSearchPage?id=${this.state.similarMovieResults2.movie_id}`}>
                                     <img src={this.state.similarMovieResults2.poster_link} style={{height:'20vh', width: '15vh'}}/> 
                                     <figcaption>{this.state.similarMovieResults2.title} </figcaption>
                                     </a>
                                 </div>
 
-                                <div class="col-md-2 col-md-offset-1">
+                                <div class="col-md-2 col-md-offset-1" style={{visibility:this.state.showResult3}}>
                                     <a href={`/movieSearchPage?id=${this.state.similarMovieResults3.movie_id}`}>
                                     <img src={this.state.similarMovieResults3.poster_link} style={{height:'20vh', width: '15vh'}}/> 
                                     <figcaption>{this.state.similarMovieResults3.title} </figcaption>
                                     </a>
                                 </div>
 
-                                <div class="col-md-2 col-md-offset-1">
+                                <div class="col-md-2 col-md-offset-1" style={{visibility:this.state.showResult4}}>
                                     <a href={`/movieSearchPage?id=${this.state.similarMovieResults4.movie_id}`}>
                                     <img src={this.state.similarMovieResults4.poster_link} style={{height:'20vh', width: '15vh'}}/> 
                                     <figcaption>{this.state.similarMovieResults4.title} </figcaption>
                                     </a>
                                 </div>
 
-                                <div class="col-md-2 col-md-offset-1">
+                                <div class="col-md-2 col-md-offset-1" style={{visibility:this.state.showResult5}}>
                                     <a href={`/movieSearchPage?id=${this.state.similarMovieResults5.movie_id}`}>
                                     <img src={this.state.similarMovieResults5.poster_link} style={{height:'20vh', width: '15vh'}}/> 
                                     <figcaption>{this.state.similarMovieResults5.title} </figcaption>
                                     </a>
                                 </div>
 
-                                <div class="col-md-2 col-md-offset-1">
+                                <div class="col-md-2 col-md-offset-1" style={{visibility:this.state.showResult6}}>
                                     <a href={`/movieSearchPage?id=${this.state.similarMovieResults6.movie_id}`}>
                                     <img src={this.state.similarMovieResults6.poster_link} style={{height:'20vh', width: '15vh'}}/> 
                                     <figcaption>{this.state.similarMovieResults6.title} </figcaption>
