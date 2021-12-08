@@ -277,13 +277,13 @@ class MovieSearchPage extends React.Component {
                     </br>
                 </Form>
 
-                {
+
                     <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                         Search By Type
                     </div>
-                }
 
-                {
+
+
                     <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                         <ButtonGroup>
                             <Button  onClick={this.getActionMovies} theme="secondary" outline theme="success" style={{ margin: "auto" }}> Action </Button>
@@ -292,9 +292,9 @@ class MovieSearchPage extends React.Component {
                             <Button onClick={this.getThrillerMovies} theme="secondary" outline theme="success"> Thriller </Button>
                         </ButtonGroup>
                     </div>
-                }
 
-                {<div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                     <ButtonGroup>
                         <Button onClick={this.getCrimeMovies} theme="secondary" outline theme="success"> Crime </Button>
                         <Button onClick={this.getWesternMovies} theme="secondary" outline theme="success"> Western </Button>
@@ -304,7 +304,7 @@ class MovieSearchPage extends React.Component {
                         <Button onClick={this.getMusicMovies} theme="secondary" outline theme="success"> Music </Button>
                     </ButtonGroup>
                 </div>
-                }
+
 
 
                 <Divider/>

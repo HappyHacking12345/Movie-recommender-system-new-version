@@ -60,7 +60,7 @@ const App = () => {
             <li className="nav-item">
               <Link to={"/myFavorite"}>
                 <h5 id="welcomeMessage" className="nav-link">
-                  Welcome, {currentUser.displayName}, check out your fav here!
+                  Welcome, {currentUser.displayName}, check out your favorite here!
                 </h5>
               </Link>
             </li>
