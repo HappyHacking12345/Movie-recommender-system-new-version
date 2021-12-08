@@ -320,15 +320,28 @@ async function register(req, res) {
     let password = req.body.password;
     if (username && email && password) {
         connection.query(`
-           INSERT INTO users (user_name, user_email, user_pass) VALUES ('${username}', '${email}', '${password}');`,
+           Select * from users where user_email = '${email}' or user_name = '${username}';`,
             function (error, results, fields) {
-            if (error) {
-                console.log(error)
-                res.json({error : error})
-            } else if (results) {
-                res.json({message : "Successfully registered!"})
-            }
-        })
+                if (error) {
+                    console.log(error)
+                    res.json({error : error})
+                } else if (results) {
+                    if (results.length > 0) {
+                        res.json({message : "This email or username has been used, please use another email or username"})
+                    } else {
+                        connection.query(`
+                                INSERT INTO users (user_name, user_email, user_pass) VALUES ('${username}', '${email}', '${password}');`,
+                                function (error, results, fields) {
+                                if (error) {
+                                    console.log(error)
+                                    res.json({error : error})
+                                } else if (results) {
+                                    res.json({message : "Successfully registered!"})
+                                }
+                            })
+                    }
+                }
+            })
     } else {
         res.json({message: 'Unable to register'})
     }

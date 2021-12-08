@@ -5,6 +5,7 @@ import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
 
 import AuthService from "../services/auth.service";
+import {getKeywordSearch} from "../fetcher";
 
 const required = (value) => {
     if (!value) {
@@ -77,9 +78,13 @@ const Register = (props) => {
         setMessage("");
         setSuccessful(false);
 
-        form.current.validateAll();
+        // form.current.validateAll();
 
         if (checkBtn.current.context._errors.length === 0) {
+            // getKeywordSearch(this.state.keywordQuery).then(res => {
+            //     this.setState({ movieResults: res.results })
+            // })
+
             AuthService.register(username, email, password).then(
                 (response) => {
                     setMessage(response.data.message);

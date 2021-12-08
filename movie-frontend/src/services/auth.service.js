@@ -24,6 +24,20 @@ const login = (username, password) => {
       return response.data;
     });
 };
+const checkEmailExist = (email) => {
+    return axios
+        .post(API_URL + "checkEmailExist", { email })
+        .then((response) => {
+            return response.data.message;
+        });
+};
+const checkUsernameExist = (username) => {
+    return axios
+        .post(API_URL + "checkUsernameExist", { username })
+        .then((response) => {
+            return response.data.message;
+        });
+};
 
 const logout = () => {
   localStorage.removeItem("user");
@@ -37,7 +51,9 @@ const AuthService = {
   register,
   login,
   logout,
-  getCurrentUser
+  getCurrentUser,
+    checkEmailExist,
+    checkUsernameExist
 };
 
 export default AuthService; 

@@ -25,11 +25,16 @@ app.post('/api/auth/login', routes.login)
 
 app.post('/api/auth/register', routes.register)
 
+// app.post('/api/auth/checkEmailExist', routes.checkEmailExist)
+//
+// app.post('/api/auth/checkUsernameExist', routes.checkUsernameExist)
+
 app.get('/user/isfav', routes.isFav)
 
 app.get('/user/myfav', routes.myFav)
 
 app.put('/user/setfav', routes.setFav)
+
 
 
 app.listen(config.server_port, () => {

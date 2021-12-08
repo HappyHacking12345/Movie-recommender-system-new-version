@@ -1,5 +1,5 @@
 import "antd/dist/antd.css";
-import img_walle from "../assets/images/logo.jpeg";
+import img_walle from "../assets/images/newLogo.png";
 
 function AppHeader() {
   return (
@@ -16,7 +16,7 @@ function AppHeader() {
         <h2
           style={{ display: "inline-block", color: "#ffffff", margin: "10px" }}
         >
-          Movie recommender
+          MotionPie
         </h2>
       </span>
       <span>
