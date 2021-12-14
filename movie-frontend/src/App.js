@@ -58,12 +58,11 @@ const App = () => {
         {currentUser ? (
           <div className="navbar-nav justify-content-end">
             <li className="nav-item">
-              <Link to={"/myFavorite"}>
                 <h5 id="welcomeMessage" className="nav-link">
-                  Welcome, {currentUser.displayName}, check out your favorite here!
+                  Welcome, {currentUser.displayName}, <Link to={"/myFavorite"}>click here</Link> to check out your favorite!
                 </h5>
-              </Link>
             </li>
+
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
                 <button
