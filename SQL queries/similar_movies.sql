@@ -17,10 +17,11 @@ WHERE movie_id IN (SELECT DISTINCT movie_id
                                                         FROM movieGenresRelation
                                                         WHERE genres_id IN (SELECT genres_id
                                                                             FROM movieGenresRelation
-                                                                            WHERE movie_id = 2))) M) N
+                                                                            WHERE movie_id = 2)
+                                                        )) M) N
                             GROUP BY movie_id
                             ORDER BY SUM(related) DESC) P
-                    ) LIMIT 50) A LEFT JOIN meta B
+                    ) AND movie_id <> 2 LIMIT 10) A LEFT JOIN meta B
 ON A.movie_id = B.id)
 SELECT movie_info.*, F.links AS poster_link
 FROM
