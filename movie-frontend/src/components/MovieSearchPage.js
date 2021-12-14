@@ -102,6 +102,7 @@ class MovieSearchPage extends React.Component {
         this.handleKeywordQueryChange = this.handleKeywordQueryChange.bind(this)
         this.handleTypeQueryChange = this.handleTypeQueryChange.bind(this)
         this.handleSimilarTypeQueryChange = this.handleSimilarTypeQueryChange.bind(this)
+        this.handleKeyDown = this.handleKeyDown.bind(this)
         this.getHistoryMovies = this.getHistoryMovies.bind(this)
         this.getActionMovies = this.getActionMovies.bind(this)
         this.getFamilyMovies = this.getFamilyMovies.bind(this)
@@ -124,7 +125,7 @@ class MovieSearchPage extends React.Component {
 
 
     handleKeywordQueryChange(event) {
-        this.setState({keywordQuery: event.target.value})
+        this.setState({keywordQuery: event.target.value});
     }
 
     handleTypeQueryChange(event) {
@@ -133,8 +134,18 @@ class MovieSearchPage extends React.Component {
 
     updateKeywordSearchResults() {
         getKeywordSearch(this.state.keywordQuery).then(res => {
-            this.setState({movieResults: res['results']})
+            this.setState({movieResults: res['results']});
         })
+    }
+
+    handleKeyDown(event) {
+        if (event.key == 'Enter') {
+            event.preventDefault();
+            getKeywordSearch(this.state.keywordQuery).then(res => {
+                this.setState({movieResults: res['results']});
+            })
+        }
+        
     }
 
     getActionMovies() {
@@ -177,9 +188,6 @@ class MovieSearchPage extends React.Component {
     getFamilyMovies() {
         this.updateTypeSearchResults({'name':'Family'})
     }
-
-
-
 
     handleSimilarTypeQueryChange() {
         getSimilarTypeSearch(this.state.selectedMovieId).then(res => {
@@ -265,9 +273,9 @@ class MovieSearchPage extends React.Component {
             <div>
                 <Form style={{width: '80vw', margin: '0 auto', marginTop: '5vh'}}>
                     <Row>
-                        <Col flex={2}><FormGroup style={{width: '55vw', margin: '0 auto'}}>
+                        <Col flex={2}><FormGroup style={{width: '55vw', margin: '0 auto'}} >
                             <FormInput placeholder="Type a keyword to search" value={this.state.keywordQuery}
-                                       onChange={this.handleKeywordQueryChange}/>
+                                       onChange={this.handleKeywordQueryChange} onKeyPress={this.handleKeyDown}/>
                         </FormGroup></Col>
                         <Col flex={2}><FormGroup style={{width: '10vw'}}>
                             <Button style={{marginTop: '0vh'}} onClick={this.updateKeywordSearchResults}>Search</Button>
@@ -307,10 +315,10 @@ class MovieSearchPage extends React.Component {
 
 
 
-                <Divider/>
+                <Divider key={'result table'}/>
                 <div style={{width: '70vw', margin: '0 auto', marginTop: '2vh'}}>
                     <h3>Movies</h3>
-                    <Table dataSource={this.state.movieResults} columns={movieColumns}
+                    <Table dataSource={this.state.movieResults} columns={movieColumns} key = {'gg'}
                            pagination={{pageSizeOptions: [5, 10], defaultPageSize: 5, showQuickJumper: true}}/>
                 </div>
                 <Divider/>
